@@ -1,6 +1,6 @@
 // Статистика с counter-анимацией
 import React, { useEffect, useState } from 'react';
-import { MoodEntry, MoodType, MOOD_CONFIGS } from '../types';
+import { MoodEntry, MoodType, getMoodConfig } from '../types';
 
 interface Props {
   entries: MoodEntry[];
@@ -58,11 +58,11 @@ const StatsCards: React.FC<Props> = ({ entries }) => {
       </div>
 
       <div className="stat-card">
-        <div className="stat-card-value" style={{ color: dominantMood ? MOOD_CONFIGS[dominantMood[0]].color : undefined }}>
-          {dominantMood ? MOOD_CONFIGS[dominantMood[0]].emoji : '—'}
+        <div className="stat-card-value" style={{ color: dominantMood ? getMoodConfig(dominantMood[0]).color : undefined }}>
+          {dominantMood ? getMoodConfig(dominantMood[0]).emoji : '—'}
         </div>
         <div className="stat-card-label">
-          {dominantMood ? `${MOOD_CONFIGS[dominantMood[0]].label} — чаще всего` : 'Нет данных'}
+          {dominantMood ? `${getMoodConfig(dominantMood[0]).label} — чаще всего` : 'Нет данных'}
         </div>
       </div>
 

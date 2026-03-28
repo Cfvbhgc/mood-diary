@@ -1,7 +1,7 @@
 // D3.js график настроений — organic bezier curves с анимацией рисования
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { MoodEntry, MoodType, MOOD_CONFIGS } from '../types';
+import { MoodEntry, MoodType, getMoodConfig } from '../types';
 
 interface Props {
   entries: MoodEntry[];
@@ -28,6 +28,21 @@ const MoodChart: React.FC<Props> = ({ entries }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const drawnRef = useRef(false);
+  const [containerWidth, setContainerWidth] = React.useState(800);
+
+  // ResizeObserver для responsive графика
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const ro = new ResizeObserver((observedEntries) => {
+      const entry = observedEntries[0];
+      if (entry) {
+        setContainerWidth(entry.contentRect.width);
+      }
+    });
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!svgRef.current || entries.length < 2) return;
@@ -35,9 +50,8 @@ const MoodChart: React.FC<Props> = ({ entries }) => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    const containerWidth = containerRef.current?.clientWidth || 800;
-    const width = containerWidth - 20;
-    const height = 300;
+    const width = Math.max(containerWidth - 20, 280);
+    const height = Math.min(300, width * 0.5);
     const margin = { top: 20, right: 20, bottom: 40, left: 60 };
     const innerW = width - margin.left - margin.right;
     const innerH = height - margin.top - margin.bottom;
@@ -160,10 +174,10 @@ const MoodChart: React.FC<Props> = ({ entries }) => {
       .attr('cx', (d) => xScale(d.date))
       .attr('cy', (d) => yScale(d.value))
       .attr('r', 4)
-      .attr('fill', (d) => MOOD_CONFIGS[d.mood].color)
+      .attr('fill', (d) => getMoodConfig(d.mood).color)
       .attr('stroke', 'var(--bg-card)')
       .attr('stroke-width', 2);
-  }, [entries]);
+  }, [entries, containerWidth]);
 
   return (
     <div className="mood-chart-wrapper" ref={containerRef}>

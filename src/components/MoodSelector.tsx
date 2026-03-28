@@ -1,7 +1,7 @@
 // Выбор эмоции через blob-формы с CSS анимацией
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MoodType, MOOD_CONFIGS } from '../types';
+import { MoodType, getMoodConfig } from '../types';
 
 interface Props {
   selected: MoodType | null;
@@ -14,7 +14,7 @@ const MoodSelector: React.FC<Props> = ({ selected, onSelect }) => {
   return (
     <div className="mood-selector">
       {moods.map((mood, i) => {
-        const config = MOOD_CONFIGS[mood];
+        const config = getMoodConfig(mood);
         const isActive = selected === mood;
         return (
           <motion.button

@@ -19,6 +19,23 @@ export interface MoodConfig {
   bgTint: string;
 }
 
+// Дефолтный конфиг — fallback на случай undefined mood
+export const DEFAULT_MOOD_CONFIG: MoodConfig = {
+  label: 'Настроение',
+  emoji: '◯',
+  color: '#8b5cf6',
+  gradient: 'linear-gradient(135deg, #8b5cf6, #6366f1)',
+  bgTint: 'rgba(139, 92, 246, 0.06)',
+};
+
+// Безопасный доступ к конфигу настроения
+export const getMoodConfig = (mood: MoodType | string | undefined | null): MoodConfig => {
+  if (mood && mood in MOOD_CONFIGS) {
+    return MOOD_CONFIGS[mood as MoodType];
+  }
+  return DEFAULT_MOOD_CONFIG;
+};
+
 export const MOOD_CONFIGS: Record<MoodType, MoodConfig> = {
   happy: {
     label: 'Радость',

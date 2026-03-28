@@ -1,7 +1,7 @@
 // Вертикальный timeline записей с blob-элементами
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MoodEntry, MOOD_CONFIGS } from '../types';
+import { MoodEntry, getMoodConfig } from '../types';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -18,7 +18,7 @@ const Timeline: React.FC<Props> = ({ entries, onDelete }) => {
     <div className="timeline">
       <AnimatePresence>
         {sorted.map((entry) => {
-          const config = MOOD_CONFIGS[entry.mood];
+          const config = getMoodConfig(entry.mood);
           return (
             <motion.div
               key={entry.id}

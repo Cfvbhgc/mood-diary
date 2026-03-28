@@ -65,7 +65,7 @@ body {
 
 .hero-title {
   font-family: 'Instrument Serif', serif;
-  font-size: clamp(6rem, 15vw, 14rem);
+  font-size: clamp(4rem, 12vw, 14rem);
   line-height: 0.85;
   font-weight: 400;
   color: #8b5cf6;
@@ -79,7 +79,7 @@ body {
 }
 
 .hero-subtitle {
-  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-size: clamp(1rem, 3vw, 2rem);
   color: var(--text-muted);
   margin-top: 1.5rem;
   font-weight: 300;
@@ -96,7 +96,7 @@ body {
 
 /* ==================== SECTION ==================== */
 .section {
-  padding: 4rem 0;
+  padding: clamp(1rem, 4vw, 4rem) 0;
   /* Fallback: гарантируем видимость если framer-motion не отработает */
   min-height: 1px;
 }
@@ -112,7 +112,7 @@ body {
 
 .section-subtitle {
   color: var(--text-muted);
-  font-size: 0.95rem;
+  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
   margin-bottom: 2.5rem;
   font-weight: 300;
 }
@@ -599,36 +599,198 @@ body {
 }
 
 /* ==================== RESPONSIVE ==================== */
+
+/* Tablet */
 @media (max-width: 768px) {
   .hero {
     min-height: 50vh;
     padding: 2rem 0;
   }
-  
+
   .mood-selector {
-    gap: 1rem;
+    gap: 0.75rem;
   }
-  
+
   .mood-blob {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
+    max-width: 60px;
   }
-  
+
+  .mood-blob-symbol {
+    font-size: 1.2rem;
+  }
+
+  .mood-blob-label {
+    font-size: 0.55rem;
+  }
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .mood-chart-wrapper {
     padding: 1rem;
   }
-  
+
   .timeline {
     padding-left: 30px;
   }
+
+  .timeline::before {
+    left: 10px;
+  }
+
+  .timeline-dot {
+    left: -28px;
+    width: 10px;
+    height: 10px;
+  }
+
+  .entry-form {
+    padding: 1.25rem;
+  }
+
+  .heatmap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .heatmap-cell {
+    width: 14px;
+    height: 14px;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
 }
 
+/* Mobile */
 @media (max-width: 480px) {
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+
+  .mood-selector {
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .mood-blob {
+    width: 52px;
+    height: 52px;
+    max-width: 52px;
+  }
+
+  .mood-blob-symbol {
+    font-size: 1rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .mood-blob-label {
+    font-size: 0.5rem;
+  }
+
+  .timeline-item {
+    padding: 1rem;
+  }
+
+  .timeline-item-text {
+    font-size: 0.85rem;
+  }
+
+  .entry-form textarea {
+    min-height: 90px;
+    font-size: 0.9rem;
+  }
+
+  .entry-form-actions {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-ghost {
+    width: 100%;
+    text-align: center;
+  }
+
+  .heatmap-cell {
+    width: 12px;
+    height: 12px;
+  }
+
+  .heatmap-day-label {
+    width: 20px;
+    font-size: 0.5rem;
+  }
+}
+
+/* Ultra-wide */
+@media (min-width: 2560px) {
+  .app-container {
+    max-width: 1600px;
+  }
+
+  .hero-title {
+    font-size: 16rem;
+  }
+
+  .section-title {
+    font-size: 4.5rem;
+  }
+
+  .mood-blob {
+    width: 120px;
+    height: 120px;
+  }
+
+  .mood-blob-symbol {
+    font-size: 2.2rem;
+  }
+
+  .mood-blob-label {
+    font-size: 0.8rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+
+  .stat-card-value {
+    font-size: 3.5rem;
+  }
+
+  .timeline-item {
+    padding: 2rem 2.5rem;
+  }
+
+  .timeline-item-text {
+    font-size: 1.1rem;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .mood-blob {
+    animation: none;
+  }
+
+  .hero-title,
+  .hero-subtitle,
+  .hero-line {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

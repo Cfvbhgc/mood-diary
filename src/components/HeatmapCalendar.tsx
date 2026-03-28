@@ -1,6 +1,6 @@
 // Календарь-хитмэп — круглые ячейки как GitHub contributions
 import React, { useState, useCallback } from 'react';
-import { MoodEntry, MOOD_CONFIGS } from '../types';
+import { MoodEntry, getMoodConfig } from '../types';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, subMonths, isAfter } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -35,7 +35,7 @@ const HeatmapCalendar: React.FC<Props> = ({ entries }) => {
     setTooltip({
       text: entry.text,
       date: format(new Date(entry.date), 'd MMMM yyyy', { locale: ru }),
-      mood: MOOD_CONFIGS[entry.mood].label,
+      mood: getMoodConfig(entry.mood).label,
       x: rect.left + rect.width / 2,
       y: rect.top - 10,
     });
@@ -96,7 +96,7 @@ const HeatmapCalendar: React.FC<Props> = ({ entries }) => {
                         key={dateStr}
                         className={`heatmap-cell ${entry ? 'has-entry' : ''} ${isFuture ? 'future' : ''}`}
                         style={entry ? {
-                          background: MOOD_CONFIGS[entry.mood].gradient,
+                          background: getMoodConfig(entry.mood).gradient,
                           borderColor: 'transparent',
                         } : undefined}
                         onMouseEnter={entry ? (e) => handleMouseEnter(e, entry) : undefined}

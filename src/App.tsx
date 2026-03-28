@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, Component, ErrorInfo, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import './App.css';
-import { MoodEntry, MoodType, MOOD_CONFIGS } from './types';
+import { MoodEntry, MoodType, getMoodConfig } from './types';
 import { sampleEntries } from './data';
 import Hero from './components/Hero';
 import MoodSelector from './components/MoodSelector';
@@ -41,12 +41,17 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
 const STORAGE_KEY = 'mood-diary-entries';
 
 // Загрузка записей из localStorage или sample данных
+const VALID_MOODS: Set<string> = new Set(['happy', 'calm', 'sad', 'angry', 'anxious']);
+
 const loadEntries = (): MoodEntry[] => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // Фильтруем записи с невалидным mood — защита от "Cannot read properties of undefined"
+        return parsed.filter((e: MoodEntry) => e && e.mood && VALID_MOODS.has(e.mood));
+      }
     }
   } catch {}
   // При первом запуске — загружаем демо-данные
@@ -66,7 +71,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const root = document.documentElement;
     if (selectedMood) {
-      const config = MOOD_CONFIGS[selectedMood];
+      const config = getMoodConfig(selectedMood);
       root.style.setProperty('--mood-color', config.color);
       root.style.setProperty('--mood-gradient', config.gradient);
       root.style.setProperty('--mood-bg-tint', config.bgTint);

@@ -1,7 +1,7 @@
 // Форма создания записи — эмоция + текст + дата
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MoodType, MOOD_CONFIGS } from '../types';
+import { MoodType, getMoodConfig } from '../types';
 
 interface Props {
   selectedMood: MoodType | null;
@@ -31,13 +31,13 @@ const EntryForm: React.FC<Props> = ({ selectedMood, onSubmit }) => {
           <div className="entry-form-header">
             <div
               className="entry-form-mood-badge"
-              style={{ background: MOOD_CONFIGS[selectedMood].gradient }}
+              style={{ background: getMoodConfig(selectedMood).gradient }}
             >
-              {MOOD_CONFIGS[selectedMood].emoji}
+              {getMoodConfig(selectedMood).emoji}
             </div>
             <div>
               <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>
-                {MOOD_CONFIGS[selectedMood].label}
+                {getMoodConfig(selectedMood).label}
               </div>
               <input
                 type="date"
