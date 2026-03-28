@@ -147,13 +147,19 @@
 }
 
 /* ===== Stats Bar ===== */
+.stats-bar {
+  overflow: hidden;
+}
+.stats-bar .section-title {
+  margin-bottom: 1.2rem;
+}
 .stats-chart {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   gap: 0.5rem;
-  height: 160px;
-  padding: 1rem 0;
+  max-height: 180px;
+  padding: 0.5rem 0 1rem;
 }
 
 .stats-column {
@@ -162,12 +168,14 @@
   align-items: center;
   gap: 0.4rem;
   flex: 1;
+  max-height: 160px;
 }
 
 .stats-bar-wrapper {
   width: 100%;
   max-width: 40px;
-  height: 100px;
+  height: 90px;
+  max-height: 90px;
   background: var(--surface);
   border-radius: 6px;
   display: flex;
@@ -297,7 +305,12 @@
 /* ===== Media Queries ===== */
 @media (max-width: 768px) {
   .stats-chart {
-    height: 130px;
+    max-height: 140px;
+  }
+
+  .stats-bar-wrapper {
+    height: 80px;
+    max-height: 80px;
   }
 
   .stats-label {
@@ -334,11 +347,12 @@
   }
 
   .stats-chart {
-    height: 100px;
+    max-height: 120px;
   }
 
   .stats-bar-wrapper {
-    height: 70px;
+    height: 60px;
+    max-height: 60px;
   }
 
   .heatmap-cell {
