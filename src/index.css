@@ -1,37 +1,28 @@
-/* Глобальный reset */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
+body {
+  background: #0a0a0a;
+  color: #e8e8e8;
+  font-family: 'Space Grotesk', sans-serif;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  font-family: 'Space Grotesk', -apple-system, sans-serif;
-  background: #0a0a0a;
-  color: #e0e0e0;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-#root {
   min-height: 100vh;
 }
 
 button {
+  font-family: inherit;
   cursor: pointer;
   border: none;
   background: none;
-  font-family: inherit;
   color: inherit;
 }
 
-input, textarea {
+textarea {
   font-family: inherit;
   color: inherit;
 }

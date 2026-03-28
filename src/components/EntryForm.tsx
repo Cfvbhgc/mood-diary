@@ -1,73 +1,49 @@
-// Форма создания записи — эмоция + текст + дата
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MoodType, getMoodConfig } from '../types';
+import { MOODS } from '../types';
 
 interface Props {
-  selectedMood: MoodType | null;
-  onSubmit: (text: string, date: string) => void;
+  selectedMood: string | null;
+  noteText: string;
+  onNoteChange: (text: string) => void;
+  onSave: () => void;
 }
 
-const EntryForm: React.FC<Props> = ({ selectedMood, onSubmit }) => {
-  const [text, setText] = useState('');
-  const [date, setDate] = useState(() => new Date().toISOString().split('T')[0]);
-
-  const handleSubmit = () => {
-    if (!selectedMood || !text.trim()) return;
-    onSubmit(text.trim(), date);
-    setText('');
-  };
+const EntryForm: React.FC<Props> = ({ selectedMood, noteText, onNoteChange, onSave }) => {
+  const moodData = MOODS.find((m) => m.name === selectedMood);
 
   return (
     <AnimatePresence>
       {selectedMood && (
-        <motion.div
+        <motion.section
           className="entry-form"
-          initial={{ opacity: 0, height: 0, marginTop: 0 }}
-          animate={{ opacity: 1, height: 'auto', marginTop: 32 }}
-          exit={{ opacity: 0, height: 0, marginTop: 0 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.4 }}
         >
-          <div className="entry-form-header">
-            <div
-              className="entry-form-mood-badge"
-              style={{ background: getMoodConfig(selectedMood).gradient }}
-            >
-              {getMoodConfig(selectedMood).emoji}
-            </div>
-            <div>
-              <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>
-                {getMoodConfig(selectedMood).label}
-              </div>
-              <input
-                type="date"
-                className="entry-form-date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: 'var(--text-muted)',
-                  fontSize: '0.85rem',
-                }}
-              />
-            </div>
-          </div>
+          <h2 className="section-title">
+            Запиши мысли
+            <span
+              className="mood-dot-inline"
+              style={{ background: moodData?.color }}
+            />
+          </h2>
           <textarea
-            placeholder="Что произошло сегодня? Как ты себя чувствуешь?"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
+            className="entry-textarea"
+            placeholder="Что произошло сегодня..."
+            value={noteText}
+            onChange={(e) => onNoteChange(e.target.value)}
+            rows={3}
           />
-          <div className="entry-form-actions">
-            <button
-              className="btn-primary"
-              onClick={handleSubmit}
-              disabled={!text.trim()}
-            >
-              Сохранить
-            </button>
-          </div>
-        </motion.div>
+          <button
+            className="save-btn"
+            onClick={onSave}
+            style={{ background: moodData?.color }}
+          >
+            Сохранить
+          </button>
+        </motion.section>
       )}
     </AnimatePresence>
   );
