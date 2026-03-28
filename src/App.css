@@ -68,7 +68,8 @@ body {
   font-size: clamp(6rem, 15vw, 14rem);
   line-height: 0.85;
   font-weight: 400;
-  background: var(--mood-gradient);
+  color: #8b5cf6;
+  background: var(--mood-gradient, linear-gradient(135deg, #8b5cf6, #6366f1));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -96,12 +97,14 @@ body {
 /* ==================== SECTION ==================== */
 .section {
   padding: 4rem 0;
+  /* Fallback: гарантируем видимость если framer-motion не отработает */
+  min-height: 1px;
 }
 
 .section-title {
   font-family: 'Instrument Serif', serif;
   font-size: clamp(2rem, 4vw, 3.5rem);
-  color: var(--text);
+  color: var(--text, #e8e8e8);
   margin-bottom: 0.5rem;
   font-weight: 400;
   letter-spacing: -0.02em;

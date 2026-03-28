@@ -1,5 +1,5 @@
 // Основной layout и state management дневника настроений
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Component, ErrorInfo, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import './App.css';
 import { MoodEntry, MoodType, MOOD_CONFIGS } from './types';
@@ -11,6 +11,31 @@ import HeatmapCalendar from './components/HeatmapCalendar';
 import MoodChart from './components/MoodChart';
 import Timeline from './components/Timeline';
 import StatsCards from './components/StatsCards';
+
+// Error Boundary для перехвата runtime ошибок
+class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: string }> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: '' };
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error: error.message };
+  }
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error('Mood Diary Error:', error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#e8e8e8', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', padding: '2rem' }}>
+          <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>MOOD</h1>
+          <p style={{ color: '#666' }}>Произошла ошибка: {this.state.error}</p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // Ключ для localStorage
 const STORAGE_KEY = 'mood-diary-entries';
@@ -74,87 +99,88 @@ const App: React.FC = () => {
   // Анимация секций при скролле
   const sectionVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
   };
 
   return (
-    <div className="app">
-      <div className="app-container">
-        {/* Hero секция */}
-        <Hero />
+    <ErrorBoundary>
+      <div className="app">
+        <div className="app-container">
+          {/* Hero секция */}
+          <Hero />
 
-        {/* Выбор настроения + Форма */}
-        <motion.section
-          className="section"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={sectionVariants}
-        >
-          <h2 className="section-title">Как ты сегодня?</h2>
-          <p className="section-subtitle">Выбери своё настроение</p>
-          <MoodSelector selected={selectedMood} onSelect={setSelectedMood} />
-          <EntryForm selectedMood={selectedMood} onSubmit={handleAddEntry} />
-        </motion.section>
+          {/* Выбор настроения + Форма — видимо сразу, анимируется при появлении */}
+          <motion.section
+            className="section"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <h2 className="section-title">Как ты сегодня?</h2>
+            <p className="section-subtitle">Выбери своё настроение</p>
+            <MoodSelector selected={selectedMood} onSelect={setSelectedMood} />
+            <EntryForm selectedMood={selectedMood} onSubmit={handleAddEntry} />
+          </motion.section>
 
-        {/* Статистика */}
-        <motion.section
-          className="section"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={sectionVariants}
-        >
-          <h2 className="section-title">Статистика</h2>
-          <p className="section-subtitle">Твой эмоциональный профиль</p>
-          <StatsCards entries={entries} />
-        </motion.section>
+          {/* Статистика */}
+          <motion.section
+            className="section"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={sectionVariants}
+          >
+            <h2 className="section-title">Статистика</h2>
+            <p className="section-subtitle">Твой эмоциональный профиль</p>
+            <StatsCards entries={entries} />
+          </motion.section>
 
-        {/* Календарь-heatmap */}
-        <motion.section
-          className="section"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={sectionVariants}
-        >
-          <h2 className="section-title">Календарь</h2>
-          <p className="section-subtitle">Карта настроений за последние месяцы</p>
-          <HeatmapCalendar entries={entries} />
-        </motion.section>
+          {/* Календарь-heatmap */}
+          <motion.section
+            className="section"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={sectionVariants}
+          >
+            <h2 className="section-title">Календарь</h2>
+            <p className="section-subtitle">Карта настроений за последние месяцы</p>
+            <HeatmapCalendar entries={entries} />
+          </motion.section>
 
-        {/* D3 график */}
-        <motion.section
-          className="section"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={sectionVariants}
-        >
-          <h2 className="section-title">Динамика</h2>
-          <p className="section-subtitle">График изменения настроений</p>
-          <MoodChart entries={entries} />
-        </motion.section>
+          {/* D3 график */}
+          <motion.section
+            className="section"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={sectionVariants}
+          >
+            <h2 className="section-title">Динамика</h2>
+            <p className="section-subtitle">График изменения настроений</p>
+            <MoodChart entries={entries} />
+          </motion.section>
 
-        {/* Timeline записей */}
-        <motion.section
-          className="section"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          variants={sectionVariants}
-        >
-          <h2 className="section-title">Записи</h2>
-          <p className="section-subtitle">История твоих настроений</p>
-          <Timeline entries={entries} onDelete={handleDeleteEntry} />
-        </motion.section>
+          {/* Timeline записей */}
+          <motion.section
+            className="section"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.05 }}
+            variants={sectionVariants}
+          >
+            <h2 className="section-title">Записи</h2>
+            <p className="section-subtitle">История твоих настроений</p>
+            <Timeline entries={entries} onDelete={handleDeleteEntry} />
+          </motion.section>
 
-        {/* Футер */}
-        <footer className="footer">
-          MOOD — Цифровой дневник настроений
-        </footer>
+          {/* Футер */}
+          <footer className="footer">
+            MOOD — Цифровой дневник настроений
+          </footer>
+        </div>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 };
 
